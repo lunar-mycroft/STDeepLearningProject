@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Read in original data
-df = pd.read_csv('originalData.csv', sep=',')
+df = pd.read_csv('dataset/events.csv', sep=',')
 
 # Figure out cutoff for what will be test/train data
 mostRecentTimestamp = max(df.timestamp)
@@ -20,5 +20,5 @@ finalTestDf = testDf.groupby(['visitorid','itemid', 'event']).size().reset_index
 #finalTestDf = testDf.groupby(['visitorid','itemid']).size().reset_index().rename(columns={0:'count'})
 
 # Save test/train data to CSV files to be uploaded later
-finalTrainDf.to_csv (r'trainData.csv', index = None, header=True)
-finalTestDf.to_csv (r'testData.csv', index = None, header=True)
+finalTrainDf.to_csv (r'dataset/trainData.csv', index = None, header=True)
+finalTestDf.to_csv (r'dataset/testData.csv', index = None, header=True)
