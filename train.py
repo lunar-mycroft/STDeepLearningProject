@@ -155,12 +155,14 @@ def train(epochs = 50, batches = 30, num_factors = 64):
         # Initialize all tensorflow variables.
         init = tf.global_variables_initializer()
 
+        #Start the saver
+        saver = tf.train.Saver()
+
     #------------------
     # GRAPH EXECUTION
     #------------------
 
-    #Start the saver
-    saver = tf.train.Saver()
+
 
     # Run the session. 
     session = tf.Session(config=None, graph=graph)
@@ -173,7 +175,7 @@ def train(epochs = 50, batches = 30, num_factors = 64):
 
 
 
-    for i in range(epochs):
+    for progress_i in range(epochs):
         for _ in range(batches):
 
             # We want to sample one known and one unknown 
@@ -199,7 +201,7 @@ def train(epochs = 50, batches = 30, num_factors = 64):
             # We run the session.
             _, l, auc = session.run([step, loss, u_auc], feed_dict)
 
-        saver.save(session, 'model',global_step=i*batches)
+        saver.save(session, 'model',global_step=progress_i*batches)
 
         progress.update(batches)
         progress.set_description('Loss: %.3f | AUC: %.3f' % (l, auc))
