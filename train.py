@@ -40,7 +40,7 @@ def loadData():
 
 def preprocessTrainingData(df):
     df = df.dropna()
-    df = df.loc[df.plays != 0]
+    df = df.loc[df.count != 0]
 
     users = list(np.sort(df.visitorid.unique()))
     items = list(np.sort(df.itemid.unique()))
