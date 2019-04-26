@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 # Load the dataframe from a tab separated file.
 df = pd.read_csv('data/usersha1-artmbid-artname-plays.tsv', sep='\t')
-    
+
 # Add column names
 df = df.drop(df.columns[1], axis=1)
 df.columns = ['user', 'artist', 'plays']
@@ -61,13 +61,13 @@ epochs = 50
 batches = 30
 num_factors = 64 # Number of latent features
 
-# Independent lambda regularization values 
+# Independent lambda regularization values
 # for user, items and bias.
 lambda_user = 0.0000001
 lambda_item = 0.0000001
 lambda_bias = 0.0000001
 
-# Our learning rate 
+# Our learning rate
 lr = 0.005
 
 # How many (u,i,j) triplets we sample for each batch
@@ -111,13 +111,13 @@ def get_variable(graph, session, name):
 
 with graph.as_default():
     '''
-    Loss function: 
+    Loss function:
     -SUM ln σ(xui - xuj) + λ(w1)**2 + λ(w2)**2 + λ(w3)**2 ...
     ln = the natural log
     σ(xuij) = the sigmoid function of xuij.
     λ = lambda regularization value.
     ||W||**2 = the squared L2 norm of our model parameters.
-    
+
     '''
 
     # Input into our model, in this case our user (u),
@@ -150,7 +150,7 @@ with graph.as_default():
     xuij = xui - xuj
 
     # Calculate the mean AUC (area under curve).
-    # if xuij is greater than 0, that means that 
+    # if xuij is greater than 0, that means that
     # xui is greater than xuj (and thats what we want).
     u_auc = tf.reduce_mean(tf.to_float(xuij > 0))
 
@@ -169,8 +169,8 @@ with graph.as_default():
     # Calculate the loss as ||W||**2 - ln σ(Xuij)
     #loss = l2_norm - tf.reduce_mean(tf.log(tf.sigmoid(xuij)))
     loss = -tf.reduce_mean(tf.log(tf.sigmoid(xuij))) + l2_norm
-    
-    # Train using the Adam optimizer to minimize 
+
+    # Train using the Adam optimizer to minimize
     # our loss function.
     opt = tf.train.AdamOptimizer(learning_rate=lr)
     step = opt.minimize(loss)
@@ -182,7 +182,7 @@ with graph.as_default():
 # GRAPH EXECUTION
 #------------------
 
-# Run the session. 
+# Run the session.
 session = tf.Session(config=None, graph=graph)
 session.run(init)
 
@@ -193,8 +193,8 @@ progress = tqdm(total=batches*epochs)
 for _ in range(epochs):
     for _ in range(batches):
 
-        # We want to sample one known and one unknown 
-        # item for each user. 
+        # We want to sample one known and one unknown
+        # item for each user.
 
         # First we sample 15000 uniform indices.
         idx = np.random.randint(low=0, high=len(uids), size=samples)
@@ -210,7 +210,7 @@ for _ in range(epochs):
                 low=0, high=len(artists), size=(samples, 1), dtype='int32')
 
         # Feed our users, known and unknown items to
-        # our tensorflow graph. 
+        # our tensorflow graph.
         feed_dict = { u: batch_u, i: batch_i, j: batch_j }
 
         # We run the session.
@@ -259,7 +259,7 @@ def find_similar_artists(artist=None, num_items=10):
     # We then use our lookup table to grab the names of these indices
     # and add it along with its score to a pandas dataframe.
     artists, artist_scores = [], []
-    
+
     for idx in top_10:
         artists.append(item_lookup.artist.loc[item_lookup.artist_id == str(idx)].iloc[0])
         artist_scores.append(scores[idx])
@@ -292,7 +292,7 @@ def make_recommendation(user_id=None, num_items=10):
     # Grab our item bias
     item_bi = get_variable(graph, session, 'item_bias').reshape(-1)
 
-    # Calculate the score for our user for all items. 
+    # Calculate the score for our user for all items.
     rec_vector = np.add(user_vecs[user_id, :].dot(item_vecs.T), item_bi)
 
     # Grab the indices of the top users
