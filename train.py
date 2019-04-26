@@ -31,7 +31,7 @@ def get_variable(graph, session, name):
 def loadData():
     while True:
         try:
-            res = pd.read_csv('dataset/trainData.csv', sep='\t')
+            res = pd.read_csv('dataset/trainData.csv', sep=',')
             break
         except:
             print("reformatting data")
@@ -40,7 +40,7 @@ def loadData():
 
 def preprocessTrainingData(df):
     df = df.dropna()
-    df = df.loc[df.plays != 0]
+    df = df.loc[df.count != 0]
 
     users = list(np.sort(df.visitorid.unique()))
     items = list(np.sort(df.itemid.unique()))
@@ -66,13 +66,13 @@ def train(epochs = 50, batches = 30, num_factors = 64):
     preprocessed = preprocessTrainingData(rawData)
     df, users, items, numEvents, rows, cols, data_sparse, uids, iids = makeMatrix(preprocessed)
 
-    # Independent lambda regularization values 
+    # Independent lambda regularization values
     # for user, items and bias.
     lambda_user = 0.0000001
     lambda_item = 0.0000001
     lambda_bias = 0.0000001
 
-    # Our learning rate 
+    # Our learning rate
     lr = 0.005
 
     # How many (u,i,j) triplets we sample for each batch
@@ -118,7 +118,7 @@ def train(epochs = 50, batches = 30, num_factors = 64):
         xuij = xui - xuj
 
         # Calculate the mean AUC (area under curve).
-        # if xuij is greater than 0, that means that 
+        # if xuij is greater than 0, that means that
         # xui is greater than xuj (and thats what we want).
         u_auc = tf.reduce_mean(tf.to_float(xuij > 0))
 
@@ -137,8 +137,8 @@ def train(epochs = 50, batches = 30, num_factors = 64):
         # Calculate the loss as ||W||**2 - ln σ(Xuij)
         #loss = l2_norm - tf.reduce_mean(tf.log(tf.sigmoid(xuij)))
         loss = -tf.reduce_mean(tf.log(tf.sigmoid(xuij))) + l2_norm
-        
-        # Train using the Adam optimizer to minimize 
+
+        # Train using the Adam optimizer to minimize
         # our loss function.
         opt = tf.train.AdamOptimizer(learning_rate=lr)
         step = opt.minimize(loss)
@@ -153,7 +153,7 @@ def train(epochs = 50, batches = 30, num_factors = 64):
     #Start the saver
     saver = tf.train.Saver()
 
-    # Run the session. 
+    # Run the session.
     session = tf.Session(config=None, graph=graph)
     session.run(init)
     saver.save(session, 'model')
@@ -167,8 +167,8 @@ def train(epochs = 50, batches = 30, num_factors = 64):
     for i in range(epochs):
         for _ in range(batches):
 
-            # We want to sample one known and one unknown 
-            # item for each user. 
+            # We want to sample one known and one unknown
+            # item for each user.
 
             # First we sample 15000 uniform indices.
             idx = np.random.randint(low=0, high=len(uids), size=samples)
@@ -184,7 +184,7 @@ def train(epochs = 50, batches = 30, num_factors = 64):
                     low=0, high=len(items), size=(samples, 1), dtype='int32')
 
             # Feed our users, known and unknown items to
-            # our tensorflow graph. 
+            # our tensorflow graph.
             feed_dict = { u: batch_u, i: batch_i, j: batch_j }
 
             # We run the session.
@@ -200,8 +200,3 @@ def train(epochs = 50, batches = 30, num_factors = 64):
 
 if __name__ == "__main__":
     train()
-
-
-
-    
-
