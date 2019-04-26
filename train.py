@@ -31,7 +31,7 @@ def get_variable(graph, session, name):
 def loadData():
     while True:
         try:
-            res = pd.read_csv('data/dataset/trainData.csv', sep='\t')
+            res = pd.read_csv('dataset/trainData.csv', sep='\t')
             break
         except:
             print("reformatting data")
@@ -150,15 +150,21 @@ def train(epochs = 50, batches = 30, num_factors = 64):
     # GRAPH EXECUTION
     #------------------
 
+    #Start the saver
+    saver = tf.train.Saver()
+
     # Run the session. 
     session = tf.Session(config=None, graph=graph)
     session.run(init)
+    saver.save(session, 'model')
 
     # This has noting to do with tensorflow but gives
     # us a nice progress bar for the training.
     progress = tqdm(total=batches*epochs)
 
-    for _ in range(epochs):
+
+
+    for i in range(epochs):
         for _ in range(batches):
 
             # We want to sample one known and one unknown 
@@ -184,10 +190,16 @@ def train(epochs = 50, batches = 30, num_factors = 64):
             # We run the session.
             _, l, auc = session.run([step, loss, u_auc], feed_dict)
 
+        saver.save(session, 'model',global_step=i*batches)
+
         progress.update(batches)
         progress.set_description('Loss: %.3f | AUC: %.3f' % (l, auc))
 
+
     progress.close()
+
+if __name__ == "__main__":
+    train()
 
 
 
