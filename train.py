@@ -44,10 +44,15 @@ def preprocessTrainingData(df):
     df['user_id'] = df['visitorid'].astype("category").cat.codes
     df['item_id'] = df['itemid'].astype("category").cat.codes
 
+    # Create a lookup frame so we can get the artist
+    # names back in readable form later.
+    item_lookup = df[['user_id', 'artist']].drop_duplicates()
+    item_lookup['user_id'] = item_lookup.visitorid.astype(str)
+
     df = df.loc[df.count != 0]
 
     users = list(np.sort(df.user_id.unique()))
-    items = list(np.sort(df.itemid.unique()))
+    items = list(np.sort(df.item_id.unique()))
     numEvents = list(df.count)
 
     return df, users, items, numEvents
