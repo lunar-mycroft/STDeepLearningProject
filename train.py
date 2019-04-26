@@ -39,6 +39,7 @@ def loadData():
     return res
 
 def preprocessTrainingData(df):
+
     df = df.dropna()
 
     df['user_id'] = df['visitorid'].astype("category").cat.codes
@@ -49,11 +50,12 @@ def preprocessTrainingData(df):
     item_lookup = df[['user_id', 'visitorid']].drop_duplicates()
     item_lookup['user_id'] = item_lookup.visitorid.astype(str)
 
-    df = df.loc[df.count != 0]
+    #df = df.loc[df.eventsCount != 0]
+    #print(df)
 
     users = list(sorted(set(df.user_id)))
     items = list(sorted(set(df.item_id)))
-    numEvents = list(df.count)
+    numEvents = list(df.eventsCount)
 
     return df, users, items, numEvents
 
@@ -173,7 +175,7 @@ def train(epochs = 50, batches = 30, num_factors = 64):
 
 
 
-    for i in range(epochs):
+    for _ in range(epochs):
         for _ in range(batches):
 
             # We want to sample one known and one unknown
@@ -199,7 +201,7 @@ def train(epochs = 50, batches = 30, num_factors = 64):
             # We run the session.
             _, l, auc = session.run([step, loss, u_auc], feed_dict)
 
-        saver.save(session, 'model',global_step=i*batches)
+        saver.save(session, 'model',global_step=1)
 
         progress.update(batches)
         progress.set_description('Loss: %.3f | AUC: %.3f' % (l, auc))
