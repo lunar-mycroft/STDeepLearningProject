@@ -31,7 +31,7 @@ def get_variable(graph, session, name):
 def loadData():
     while True:
         try:
-            res = pd.read_csv('dataset/trainData.csv', sep='\t')
+            res = pd.read_csv('dataset/trainData.csv', sep=',')
             break
         except:
             print("reformatting data")
@@ -40,9 +40,13 @@ def loadData():
 
 def preprocessTrainingData(df):
     df = df.dropna()
+
+    df['user_id'] = df['visitorid'].astype("category").cat.codes
+    df['item_id'] = df['itemid'].astype("category").cat.codes
+
     df = df.loc[df.count != 0]
 
-    users = list(np.sort(df.visitorid.unique()))
+    users = list(np.sort(df.user_id.unique()))
     items = list(np.sort(df.itemid.unique()))
     numEvents = list(df.count)
 
@@ -51,8 +55,8 @@ def preprocessTrainingData(df):
 def makeMatrix(tup):
     df, users, items, numEvents = tup
 
-    rows = df.visitorid.astype(float)
-    cols = df.itemid.astype(float)
+    rows = df.user_id.astype(float)
+    cols = df.item_id.astype(float)
 
     data_sparse = sp.csr_matrix((numEvents, (rows, cols)), shape=(len(users), len(items)))
 
