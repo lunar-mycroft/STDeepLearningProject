@@ -156,13 +156,14 @@ def train(epochs = 50, batches = 30, num_factors = 64):
 
         # Initialize all tensorflow variables.
         init = tf.global_variables_initializer()
+        #Start the saver
+        saver = tf.train.Saver()
 
     #------------------
     # GRAPH EXECUTION
     #------------------
 
-    #Start the saver
-    saver = tf.train.Saver()
+
 
     # Run the session.
     session = tf.Session(config=None, graph=graph)
