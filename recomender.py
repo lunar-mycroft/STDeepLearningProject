@@ -10,8 +10,8 @@ from util import init_variable, embed, get_variable, loadModal, loadTestData, pr
 class Recomender():
     def __init__(self,modelPath):
         self.df, self.users, self.items, self.numEvents, self.lookUpUser, self.lookUpItem = preprocessTestData(loadTestData())
-        self.lookUpUserRev = {v, k for k, v in self.lookUpUser.items()}
-        self.lookUpItemRev = {v, k for k, v in self.lookUpItemr.items()}
+        self.lookUpUserRev = {v: k for k, v in self.lookUpUser.items()}
+        self.lookUpItemRev = {v: k for k, v in self.lookUpItem.items()}
         self.graph, self.session = loadModal(modelPath)
 
     def makeRecomendations(self,visitorid, numRecs):
@@ -30,7 +30,7 @@ class Recomender():
         item_idx = np.argsort(rec_vector)[::-1][:numRecs]
 
         # Map the indices to artist names and add to dataframe along with scores.
-        items, scores = [self.lookUpItem[]], []
+        items, scores = [self.lookUpItemRev[idx] for idx in item_idx], [rec_vector[idx] for idx in item_idx]
 
         for idx in item_idx:
             items.append(self.lookUpItemRev[idx])

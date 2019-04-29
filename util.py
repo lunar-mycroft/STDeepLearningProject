@@ -2,6 +2,7 @@ import tensorflow as tf
 import pandas as pd
 import numpy as np
 import scipy.sparse as sp
+import csv
 
 from dataReformatter import reformat
 
@@ -35,8 +36,13 @@ def loadModal(path):
 def loadTestData():
     try:
         data = pd.read_csv('dataset/testData.csv', sep=',')
-        user_lookup = pd.read_csv('/dataset/item_lookup.csv')
-        item_lookup = pd.read_csv('/dataset/user_lookup.csv')
+        
+        with open('/dataset/item_lookup.csv') as itemFile:
+            reader = csv.reader(itemFile)
+            item_lookup = [[cell for cell in row] for row in reader[1:] ]
+        with open('/dataset/user_lookup.csv') as userFile:
+            reader = csv.reader(userFile)
+            user_lookup = [[cell for cell in row] for row in reader[1:] ]
     except:
         raise FileExistsError("The test data doesn't exist.  Did you run training first?")
     return data,user_lookup,item_lookup
@@ -44,13 +50,9 @@ def loadTestData():
 def preprocessTestData(loaded):
     df, user_lookup, item_lookup = loaded
 
-    lookUpUserDict ={}
-    for index, row in user_lookup:
-        lookUpUserDict[row.visitorid]=row.user_id
+    lookUpUserDict ={row[0]: row[1] for row in user_lookup}
     
-    lookUpItemDict ={}
-    for index, row in item_lookup:
-        lookUpItemDict[row.itemid]=row.item_id
+    lookUpItemDict ={row[0]: row[1] for row in item_lookup}
 
     df['user_id']= df['visitorid'].apply(lambda x: lookUpUserDict[x])
     df['item_id']= df['itemid'].apply(lambda x: lookUpItemDict[x])
