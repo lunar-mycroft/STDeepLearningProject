@@ -24,3 +24,5 @@ def reformat():
     # Save test/train data to CSV files to be uploaded later
     finalTrainDf.to_csv (r'dataset/trainData.csv', index = None, header=True)
     finalTestDf.to_csv (r'dataset/testData.csv', index = None, header=True)
+if __name__ == "__main__":
+    reformat()

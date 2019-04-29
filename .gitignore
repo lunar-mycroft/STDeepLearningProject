@@ -3,3 +3,4 @@
 /exampleData
 model*
 checkpoint
+*.pyc

@@ -2,78 +2,15 @@ import tensorflow as tf
 import pandas as pd
 import numpy as np
 import scipy.sparse as sp
-
 from tqdm import tqdm
 
 from dataReformatter import reformat
+from util import init_variable, embed, get_variable, loadTrainingData, preprocessTrainingData, makeMatrix
 
-
-#Helper functions from example
-
-def init_variable(size, dim, name=None):
-    std = np.sqrt(2 / dim)
-    return tf.Variable(tf.random_uniform([size, dim], -std, std), name=name)
-
-
-def embed(inputs, size, dim, name=None):
-    emb = init_variable(size, dim, name)
-    return tf.nn.embedding_lookup(emb, inputs)
-
-
-def get_variable(graph, session, name):
-    v = graph.get_operation_by_name(name)
-    v = v.values()[0]
-    v = v.eval(session=session)
-    return v
-
-# Loading and preprocessing functions
-
-def loadData():
-    while True:
-        try:
-            res = pd.read_csv('dataset/trainData.csv', sep=',')
-            break
-        except:
-            print("reformatting data")
-            reformat()
-    return res
-
-def preprocessTrainingData(df):
-
-    df = df.dropna()
-
-    df['user_id'] = df['visitorid'].astype("category").cat.codes
-    df['item_id'] = df['itemid'].astype("category").cat.codes
-
-    # Create a lookup frame so we can get the artist
-    # names back in readable form later.
-    item_lookup = df[['user_id', 'visitorid']].drop_duplicates()
-    item_lookup['user_id'] = item_lookup.visitorid.astype(str)
-
-    #df = df.loc[df.eventsCount != 0]
-    #print(df)
-
-    users = list(sorted(set(df.user_id)))
-    items = list(sorted(set(df.item_id)))
-    numEvents = list(df.eventsCount)
-
-    return df, users, items, numEvents
-
-def makeMatrix(tup):
-    df, users, items, numEvents = tup
-
-    rows = df.user_id.astype(float)
-    cols = df.item_id.astype(float)
-
-    data_sparse = sp.csr_matrix((numEvents, (rows, cols)), shape=(len(users), len(items)))
-
-    uids, iids = data_sparse.nonzero()
-
-    return df, users, items, numEvents, rows, cols, data_sparse, uids, iids
 
 
 def train(epochs = 50, batches = 30, num_factors = 64):
-    rawData = loadData()
+    rawData = loadTrainingData()
     preprocessed = preprocessTrainingData(rawData)
     df, users, items, numEvents, rows, cols, data_sparse, uids, iids = makeMatrix(preprocessed)
 
