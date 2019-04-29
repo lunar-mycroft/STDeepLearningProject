@@ -98,17 +98,6 @@ def embed(inputs, size, dim, name=None):
     emb = init_variable(size, dim, name)
     return tf.nn.embedding_lookup(emb, inputs)
 
-
-def get_variable(graph, session, name):
-    '''
-    Helper function to get the value of a
-    Tensorflow variable by name.
-    '''
-    v = graph.get_operation_by_name(name)
-    v = v.values()[0]
-    v = v.eval(session=session)
-    return v
-
 with graph.as_default():
     '''
     Loss function:

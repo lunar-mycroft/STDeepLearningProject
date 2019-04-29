@@ -50,7 +50,7 @@ def preprocessTestData(loaded):
     
     lookUpItemDict ={}
     for index, row in item_lookup:
-        lookUpItemDict[row.itemid]=row.itemid
+        lookUpItemDict[row.itemid]=row.item_id
 
     df['user_id']= df['visitorid'].apply(lambda x: lookUpUserDict[x])
     df['item_id']= df['itemid'].apply(lambda x: lookUpItemDict[x])
