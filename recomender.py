@@ -24,7 +24,7 @@ class Recomender():
         item_vecs = get_variable(self.graph, self.session, 'item_factors') #V matrix
         item_bi = get_variable(self.graph, self.session, 'item_bias').reshape(-1) # Baises
 
-        
+
         rec_vector = np.add(user_vecs[user, :].dot(item_vecs.T), item_bi) # Calculate score for all items for the given user
 
         item_idx = np.argsort(rec_vector)[::-1][:numRecs]
@@ -65,7 +65,4 @@ class Recomender():
 
     def visitors(self):
         for visitorid in self.lookUpUser:
-            yield visitorid        
-
-        
-
+            yield visitorid

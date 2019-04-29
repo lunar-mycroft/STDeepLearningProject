@@ -14,9 +14,9 @@ from recomender import Recomender
 # the average hit ratio for all users in the test data is returned
 def hitRatio(rec,data,k):
     users = data['visitorid'].unique()
-    hitRatios = 0
+    hitRatios = {}
     for user in users:
-        recommendations = rec.getRecommendations(user, k)
+        recommendations = rec.makeRecomendations(user, k)
         hits = data[data['visitorid'] == user & data['itemid'].isin(recommendations)]
         hitRatios.append(len(hits.index) / len(data['visitorid'] == user))
 
@@ -25,4 +25,19 @@ def hitRatio(rec,data,k):
         sumHitRatio += hitRatio
     return sumHitRatio / len(hitRatios.index)
 
-def nDCG(rec,data):
+def nDCG(rec,data,k=len(data.index)):
+    users = data['visitorid'].unique()
+    nDCGs = {}
+    for user in users:
+        recommendations = rec.makeRecomendations(user, k)
+        scores = {}
+        for recommendation in recommendations:
+            scores.append(getScore(user, recommendation))
+        recommendations['scores'] = Series()
+        hits = data[data['visitorid'] == user & data['itemid'].isin(recommendations)]
+        hitRatios.append(len(hits.index) / len(data['visitorid'] == user))
+
+    sumHitRatio = 0
+    for hitRatio in hitRatios:
+        sumHitRatio += hitRatio
+    return sumHitRatio / len(hitRatios.index)

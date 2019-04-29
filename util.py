@@ -36,25 +36,27 @@ def loadModal(path):
 def loadTestData():
     try:
         data = pd.read_csv('dataset/testData.csv', sep=',')
-        
-        with open('/dataset/item_lookup.csv') as itemFile:
+
+        with open('dataset/item_lookup.csv') as itemFile:
             reader = csv.reader(itemFile)
-            item_lookup = [[cell for cell in row] for row in reader[1:] ]
-        with open('/dataset/user_lookup.csv') as userFile:
+            table = [[cell for cell in row] for row in reader ]
+            item_lookup = [[int(cell) for cell in row] for row in table[1:]]
+        with open('dataset/user_lookup.csv') as userFile:
             reader = csv.reader(userFile)
-            user_lookup = [[cell for cell in row] for row in reader[1:] ]
+            table = [[cell for cell in row] for row in reader ]
+            user_lookup = [[int(cell) for cell in row] for row in table[1:]]
     except:
         raise FileExistsError("The test data doesn't exist.  Did you run training first?")
-    return data,user_lookup,item_lookup
+    return data,user_lookup[1:],item_lookup[1:]
 
 def preprocessTestData(loaded):
     df, user_lookup, item_lookup = loaded
 
     lookUpUserDict ={row[0]: row[1] for row in user_lookup}
-    
-    lookUpItemDict ={row[0]: row[1] for row in item_lookup}
 
-    df['user_id']= df['visitorid'].apply(lambda x: lookUpUserDict[x])
+    lookUpItemDict ={row[1]: row[0] for row in item_lookup}
+
+    df['user_id']= df['visitorid'].apply(lambda x: x)
     df['item_id']= df['itemid'].apply(lambda x: lookUpItemDict[x])
 
     users = list(sorted(set(df.user_id)))
@@ -82,13 +84,13 @@ def preprocessTrainingData(df):
 
     # Create a lookup frame so we can get the items original id back
     user_lookup = df[['user_id', 'visitorid']].drop_duplicates()
-    user_lookup['user_id'] = user_lookup.visitorid.astype(str)
-    user_lookup.to_csv('/dataset/user_lookup.csv',index = None, header=True)
+    user_lookup['user_id'] = user_lookup.user_id.astype(str)
+    user_lookup.to_csv('dataset/user_lookup.csv',index = None, header=True)
 
     #create the same thing for the items
     item_lookup = df[['item_id', 'itemid']].drop_duplicates()
-    item_lookup['item_id'] = item_lookup.visitorid.astype(str)
-    item_lookup.to_csv('/dataset/item_lookup.csv',index = None, header=True)
+    item_lookup['item_id'] = item_lookup.item_id.astype(str)
+    item_lookup.to_csv('dataset/item_lookup.csv',index = None, header=True)
 
     #df = df.loc[df.eventsCount != 0]
     #print(df)
