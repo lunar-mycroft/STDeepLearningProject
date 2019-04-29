@@ -15,13 +15,16 @@ def reformat():
 
     # Use this code if we want separate eventsCounts for each event
     finalTrainDf = trainDf.groupby(['visitorid','itemid', 'event']).size().reset_index().rename(columns={0:'eventsCount'})
-    finalTestDf = testDf.groupby(['visitorid','itemid', 'event']).size().reset_index().rename(columns={0:'eventsCount'})
+    refTestDf = testDf.groupby(['visitorid','itemid', 'event']).size().reset_index().rename(columns={0:'eventsCount'})
 
     # Use this code if we want cumulative eventsCount including all events
     #finalTrainDf = trainDf.groupby(['visitorid','itemid']).size().reset_index().rename(columns={0:'eventsCount'})
-    #finalTestDf = testDf.groupby(['visitorid','itemid']).size().reset_index().rename(columns={0:'eventsCount'})
+    #refTestDf = testDf.groupby(['visitorid','itemid']).size().reset_index().rename(columns={0:'eventsCount'})
 
-    # Save test/train data to CSV files to be uploaded later
+    # Remove the users who only appear in the test data
+    finalTestDF = refTestDf[refTestDf['visitorid'].isin(finalTrainDf['visitorid'])].reset_index()
+
+    # Save test/train data to CSV fils to be uploaded later
     finalTrainDf.to_csv (r'dataset/trainData.csv', index = None, header=True)
     finalTestDf.to_csv (r'dataset/testData.csv', index = None, header=True)
 if __name__ == "__main__":
