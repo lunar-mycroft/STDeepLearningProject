@@ -10,8 +10,8 @@ from util import init_variable, embed, get_variable, loadModal, loadTestData, pr
 class Recomender():
     def __init__(self,modelPath):
         self.df, self.users, self.items, self.numEvents, self.lookUpUser, self.lookUpItem = preprocessTestData(loadTestData())
-        self.lookUpUserRev = {v, k for k, v in self.lookUpUser.items()}
-        self.lookUpItemRev = {v, k for k, v in self.lookUpItemr.items()}
+        self.lookUpUserRev = {v: k for k, v in self.lookUpUser.items()}
+        self.lookUpItemRev = {v: k for k, v in self.lookUpItemr.items()}
         self.graph, self.session = loadModal(modelPath)
 
     def makeRecomendations(self,visitorid, numRecs):
@@ -24,13 +24,13 @@ class Recomender():
         item_vecs = get_variable(self.graph, self.session, 'item_factors') #V matrix
         item_bi = get_variable(self.graph, self.session, 'item_bias').reshape(-1) # Baises
 
-        
+
         rec_vector = np.add(user_vecs[user, :].dot(item_vecs.T), item_bi) # Calculate score for all items for the given user
 
         item_idx = np.argsort(rec_vector)[::-1][:numRecs]
 
         # Map the indices to artist names and add to dataframe along with scores.
-        items, scores = [self.lookUpItem[]], []
+        items, scores = [], []
 
         for idx in item_idx:
             items.append(self.lookUpItemRev[idx])
@@ -65,7 +65,4 @@ class Recomender():
 
     def visitors(self):
         for visitorid in self.lookUpUser:
-            yield visitorid        
-
-        
-
+            yield visitorid

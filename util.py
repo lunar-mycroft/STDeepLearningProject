@@ -35,8 +35,8 @@ def loadModal(path):
 def loadTestData():
     try:
         data = pd.read_csv('dataset/testData.csv', sep=',')
-        user_lookup = pd.read_csv('/dataset/item_lookup.csv')
-        item_lookup = pd.read_csv('/dataset/user_lookup.csv')
+        user_lookup = pd.read_csv('dataset/item_lookup.csv')
+        item_lookup = pd.read_csv('dataset/user_lookup.csv')
     except:
         raise FileExistsError("The test data doesn't exist.  Did you run training first?")
     return data,user_lookup,item_lookup
@@ -45,9 +45,11 @@ def preprocessTestData(loaded):
     df, user_lookup, item_lookup = loaded
 
     lookUpUserDict ={}
-    for index, row in user_lookup:
-        lookUpUserDict[row.visitorid]=row.user_id
-    
+    for thing in user_lookup:
+        print(thing)
+
+        exit()
+
     lookUpItemDict ={}
     for index, row in item_lookup:
         lookUpItemDict[row.itemid]=row.item_id
@@ -80,13 +82,13 @@ def preprocessTrainingData(df):
 
     # Create a lookup frame so we can get the items original id back
     user_lookup = df[['user_id', 'visitorid']].drop_duplicates()
-    user_lookup['user_id'] = user_lookup.visitorid.astype(str)
-    user_lookup.to_csv('/dataset/user_lookup.csv',index = None, header=True)
+    user_lookup['user_id'] = user_lookup.user_id.astype(str)
+    user_lookup.to_csv('dataset/user_lookup.csv',index = None, header=True)
 
     #create the same thing for the items
     item_lookup = df[['item_id', 'itemid']].drop_duplicates()
-    item_lookup['item_id'] = item_lookup.visitorid.astype(str)
-    item_lookup.to_csv('/dataset/item_lookup.csv',index = None, header=True)
+    item_lookup['item_id'] = item_lookup.item_id.astype(str)
+    item_lookup.to_csv('dataset/item_lookup.csv',index = None, header=True)
 
     #df = df.loc[df.eventsCount != 0]
     #print(df)
