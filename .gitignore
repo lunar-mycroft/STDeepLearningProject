@@ -1,6 +1,7 @@
 
 /dataset
 /exampleData
+/sandbox
 model*
 checkpoint
 *.pyc

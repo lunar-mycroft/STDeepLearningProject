@@ -23,6 +23,7 @@ def reformat():
 
     # Remove the users who only appear in the test data
     finalTestDF = refTestDf[refTestDf['visitorid'].isin(finalTrainDf['visitorid'])].reset_index()
+    finalTestDF = refTestDf[refTestDf['itemid'].isin(finalTrainDf['itemid'])].reset_index()
 
     # Save test/train data to CSV fils to be uploaded later
     finalTrainDf.to_csv (r'dataset/trainData.csv', index = None, header=True)
