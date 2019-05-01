@@ -28,10 +28,10 @@ def get_variable(graph, session, name):
 # Our functions
 
 def loadModal(path):
-    with tf.Session() as session:
-        saver = tf.train.import_meta_graph(path)
-        saver.restore(session, tf.train.latest_checkpoint('./'))
-        return tf.get_default_graph(), session
+    session = tf.Session()
+    saver = tf.train.import_meta_graph(path)
+    saver.restore(session, tf.train.latest_checkpoint('./'))
+    return tf.get_default_graph(), session
 
 def loadTestData():
     try:
