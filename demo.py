@@ -1,7 +1,7 @@
 from recomender import Recomender
 
 if __name__ == "__main__":
-    recomender = Recomender('model-0.meta') #TODO: insert model path
+    recomender = Recomender('model-870.meta') #TODO: insert model path
     while True:
         visitorID = input("Please enter a vistor id (or quit to exit): ")
         if str(visitorID).lower() == "quit":
