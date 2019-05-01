@@ -42,6 +42,7 @@ class Recomender():
     def getScore(self,visitorid, itemid):
         if not (self.hasItem(itemid) and self.hasVisitor(visitorid)):
             raise ValueError("User or item did not exist")
+        return lookUpUser, lookUpItem
         user = self.lookUpUser[visitorid]
         item = self.lookUpItem[itemid]
 

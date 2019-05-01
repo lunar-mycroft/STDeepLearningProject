@@ -6,6 +6,11 @@ if __name__ == "__main__":
         visitorID = input("Please enter a vistor id (or quit to exit): ")
         if str(visitorID).lower() == "quit":
             break
+        try:
+            visitorID = int(visitorID)
+        except:
+            print("Please enter an integer")
+            continue
         if not recomender.hasVisitor(visitorID):
             print("Please enter a valid user")
             continue
