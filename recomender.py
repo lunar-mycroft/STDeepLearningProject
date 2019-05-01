@@ -32,10 +32,6 @@ class Recomender():
         # Map the indices to artist names and add to dataframe along with scores.
         items, scores = [self.lookUpItemRev[idx] for idx in item_idx], [rec_vector[idx] for idx in item_idx]
 
-        for idx in item_idx:
-            items.append(self.lookUpItemRev[idx])
-            scores.append(rec_vector[idx])
-
         recommendations = pd.DataFrame({'items': items, 'score': scores})
 
         return recommendations
