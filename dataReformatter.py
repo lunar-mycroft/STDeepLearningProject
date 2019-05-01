@@ -22,8 +22,8 @@ def reformat():
     #refTestDf = testDf.groupby(['visitorid','itemid']).size().reset_index().rename(columns={0:'eventsCount'})
 
     # Remove the users who only appear in the test data
-    finalTestDF = refTestDf[refTestDf['visitorid'].isin(finalTrainDf['visitorid'])].reset_index()
-    finalTestDF = refTestDf[refTestDf['itemid'].isin(finalTrainDf['itemid'])].reset_index()
+    interTestDf = refTestDf[refTestDf['visitorid'].isin(finalTrainDf['visitorid'])].reset_index()
+    finalTestDf = interTestDf[interTestDf['itemid'].isin(finalTrainDf['itemid'])].reset_index()
 
     # Save test/train data to CSV fils to be uploaded later
     finalTrainDf.to_csv (r'dataset/trainData.csv', index = None, header=True)

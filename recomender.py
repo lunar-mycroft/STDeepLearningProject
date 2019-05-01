@@ -54,7 +54,7 @@ class Recomender():
         return rec_vector[item]
 
     def hasVisitor(self, visitorid):
-        return visitorid in self.lookUpUser
+        return True
 
     def hasItem(self, itemid):
         return itemid in self.lookUpItem
