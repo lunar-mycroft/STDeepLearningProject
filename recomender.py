@@ -18,7 +18,7 @@ class Recomender():
         if not self.hasVisitor(visitorid):
             raise ValueError("visitor does not exist")
 
-        user = self.lookUpUser[visitorid]
+        user = self.lookUpUser[visitorid] #Get the correct userID from out lookup table
 
         user_vecs = get_variable(self.graph, self.session, 'user_factors') #U matrix
         item_vecs = get_variable(self.graph, self.session, 'item_factors') #V matrix
@@ -39,10 +39,10 @@ class Recomender():
         recommendations = pd.DataFrame({'items': items, 'score': scores})
 
         return recommendations
+
     def getScore(self,visitorid, itemid):
         if not (self.hasItem(itemid) and self.hasVisitor(visitorid)):
             raise ValueError("User or item did not exist")
-        return lookUpUser, lookUpItem
         user = self.lookUpUser[visitorid]
         item = self.lookUpItem[itemid]
 
@@ -55,12 +55,12 @@ class Recomender():
         return rec_vector[item]
 
     def hasVisitor(self, visitorid):
-        return True
+        return visitorid in self.lookUpUser
 
     def hasItem(self, itemid):
         return itemid in self.lookUpItem
 
-    def items(self):
+    def things(self):
         for itemid in self.lookUpItem:
             yield itemid
 
