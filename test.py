@@ -49,7 +49,7 @@ def nDCG(rec,data,k=0):
 
 # Used for checking to see if any correct predictions were made
 def printCorrectPredictions(rec,data,k):
-    users = rec.visitors()
+    users = data['visitorid'].unique()
     for user in users:
         recommendations = rec.makeRecomendations(user, k)
         hits = data[data['visitorid'] == user & data['itemid'].isin(recommendations['items'])]
@@ -57,7 +57,7 @@ def printCorrectPredictions(rec,data,k):
 
 # "Main"
 if __name__ == "__main__":
-    recomender = Recomender('model-0.meta') #TODO: insert model path
+    recomender = Recomender('model-840.meta') #TODO: insert model path
     data = loadTestData()
     while True:
         k = input("Please enter k value (or quit to exit): ")
@@ -68,6 +68,6 @@ if __name__ == "__main__":
         except:
             print("Please enter an integer")
             continue
-        #print(hitRatio(recomender, data[0][:100], int(k)))
-        #print(nDCG(recomender, data[0][:100], int(k)))
-        printCorrectPredictions(recomender, data[0][:100], int(k))
+        print(hitRatio(recomender, data[0], int(k)))
+        #print(nDCG(recomender, data[0], int(k)))
+        #printCorrectPredictions(recomender, data[0], int(k))
