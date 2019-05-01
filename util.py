@@ -52,11 +52,11 @@ def loadTestData():
 def preprocessTestData(loaded):
     df, user_lookup, item_lookup = loaded
 
-    lookUpUserDict ={row[0]: row[1] for row in user_lookup}
+    lookUpUserDict ={row[1]: row[0] for row in user_lookup}
 
     lookUpItemDict ={row[1]: row[0] for row in item_lookup}
 
-    df['user_id']= df['visitorid'].apply(lambda x: x)
+    df['user_id']= df['visitorid'].apply(lambda x: lookUpUserDict[x])
     df['item_id']= df['itemid'].apply(lambda x: lookUpItemDict[x])
 
     users = list(sorted(set(df.user_id)))
