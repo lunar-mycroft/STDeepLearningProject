@@ -10,7 +10,9 @@ def reformat():
     testTrainCutOff = mostRecentTimestamp - 86400000 # 24 hours = 86 400 000 milliseconds
 
     # Split the data into test and train sets based on timestamp
-    trainDf = df[(df['timestamp'] < testTrainCutOff)]
+    train = df[(df['timestamp'] < testTrainCutOff)]
+    train['visitorCount'] = train['visitorid'].value_counts()
+    trainDf = train[train['visitorCount'] >= 20]
     testDf = df[(df['timestamp'] >= testTrainCutOff)]
 
     # Use this code if we want separate eventsCounts for each event

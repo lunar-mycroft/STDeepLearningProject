@@ -21,8 +21,10 @@ def hitRatio(rec,data,k=0):
     hitRatios = []
     for user in users:
         recommendations = rec.makeRecomendations(user, k)
-        hits = data[data['visitorid'] == user & data['itemid'].isin(recommendations)]
-        hitRatios.append(len(hits.index) / len(data[data['visitorid'] == user].index))
+        recItems = recommendations['items'].tolist()
+        actualItems = data[data['visitorid'] == user].itemid.tolist()
+        hits = len(set(recItems) & set(actualItems))
+        hitRatios.append(hits / len(data[data['visitorid'] == user].index))
 
     sumHitRatio = 0
     for hitRatio in hitRatios:
@@ -36,10 +38,15 @@ def nDCG(rec,data,k=0):
     userNDCGs = []
     for user in users:
         recommendations = rec.makeRecomendations(user, k)
-        pos = recommendations[recommendations['items'].isin(data['itemid']) & data['visitorid'] == user].index.tolist()
+        recItems = recommendations['items'].tolist()
+        actualItems = data[data['visitorid'] == user].itemid.tolist()
+        hits = set(recItems) & set(actualItems)
+        positions = []
+        for hit in hits:
+            positions.append(recItems.index(hit))
         userNDCG = 0
-        for p in pos:
-            userNDCG += 1/log(p+1)
+        for pos in positions:
+            userNDCG += 1/(log(pos+2))
         userNDCGs.append(userNDCG)
 
     sumNDCG = 0
@@ -47,17 +54,9 @@ def nDCG(rec,data,k=0):
         sumNDCG += nDCG
     return sumNDCG / len(userNDCGs)
 
-# Used for checking to see if any correct predictions were made
-def printCorrectPredictions(rec,data,k):
-    users = data['visitorid'].unique()
-    for user in users:
-        recommendations = rec.makeRecomendations(user, k)
-        hits = data[data['visitorid'] == user & data['itemid'].isin(recommendations['items'])]
-        print(hits)
-
 # "Main"
 if __name__ == "__main__":
-    recomender = Recomender('model-840.meta') #TODO: insert model path
+    recomender = Recomender('model-60.meta') #TODO: insert model path
     data = loadTestData()
     while True:
         k = input("Please enter k value (or quit to exit): ")
@@ -68,6 +67,5 @@ if __name__ == "__main__":
         except:
             print("Please enter an integer")
             continue
-        print(hitRatio(recomender, data[0], int(k)))
-        #print(nDCG(recomender, data[0], int(k)))
-        #printCorrectPredictions(recomender, data[0], int(k))
+        print('Top-k Hit Ratio:', hitRatio(recomender, data[0], int(k)))
+        print('nDCG:', nDCG(recomender, data[0], int(k)))
