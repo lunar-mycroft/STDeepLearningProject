@@ -7,6 +7,8 @@ from tqdm import tqdm
 from dataReformatter import reformat
 from util import init_variable, embed, get_variable, loadTrainingData, preprocessTrainingData, makeMatrix
 
+# Makes heavy use of example.py code, adapted for our dataset and modularized 
+
 def train(epochs = 50, batches = 30, num_factors = 64):
     rawData = loadTrainingData()
     preprocessed = preprocessTrainingData(rawData)
