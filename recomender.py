@@ -15,6 +15,7 @@ class Recomender():
         self.graph, self.session = loadModal(modelPath)
 
     def makeRecomendations(self,visitorid, numRecs):
+        # Adapted from example
         if not self.hasVisitor(visitorid):
             raise ValueError("visitor does not exist")
 

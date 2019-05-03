@@ -7,7 +7,7 @@ import csv
 from dataReformatter import reformat
 
 
-#Helper functions from example
+#Helper functions from example (see file for credit)
 
 def init_variable(size, dim, name=None):
     std = np.sqrt(2 / dim)
@@ -52,9 +52,9 @@ def loadTestData():
 def preprocessTestData(loaded):
     df, user_lookup, item_lookup = loaded
 
-    lookUpUserDict ={row[1]: row[0] for row in user_lookup}
+    lookUpUserDict = {row[1]: row[0] for row in user_lookup}
 
-    lookUpItemDict ={row[1]: row[0] for row in item_lookup}
+    lookUpItemDict = {row[1]: row[0] for row in item_lookup}
 
     df['user_id']= df['visitorid'].apply(lambda x: lookUpUserDict[x])
     df['item_id']= df['itemid'].apply(lambda x: lookUpItemDict[x])
@@ -75,7 +75,10 @@ def loadTrainingData():
             reformat()
     return res
 
+# Remaining code borrows heavily from example as well
+
 def preprocessTrainingData(df):
+
 
     df = df.dropna()
 
