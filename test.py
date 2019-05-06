@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import scipy.sparse as sp
 from math import log
+import statistics
 
 from tqdm import tqdm
 
@@ -26,11 +27,13 @@ def hitRatio(rec,data,k=0):
         hits = len(set(recItems) & set(actualItems))
         hitRatios.append(hits / len(data[data['visitorid'] == user].index))
 
-    sumHitRatio = 0
-    for hitRatio in hitRatios:
-        sumHitRatio += hitRatio
-    return sumHitRatio / len(hitRatios)
+    return statistics.mean(hitRatios)
 
+# nDCG
+# rec is a Recomender object
+# data is the entire test dataframe
+# k is how many recommendations will be made for each user
+# the average nDCG for all users in the test data is returned
 def nDCG(rec,data,k=0):
     if k == 0:
         k = len(data.index) # It wouldn't do this as a default value
@@ -48,15 +51,11 @@ def nDCG(rec,data,k=0):
         for pos in positions:
             userNDCG += 1/(log(pos+2))
         userNDCGs.append(userNDCG)
-
-    sumNDCG = 0
-    for nDCG in userNDCGs:
-        sumNDCG += nDCG
-    return sumNDCG / len(userNDCGs)
+    return statistics.mean(userNDCGs)
 
 # "Main"
 if __name__ == "__main__":
-    recomender = Recomender('model-60.meta') #TODO: insert model path
+    recomender = Recomender('model-450.meta') #TODO: insert model path
     data = loadTestData()
     while True:
         k = input("Please enter k value (or quit to exit): ")
