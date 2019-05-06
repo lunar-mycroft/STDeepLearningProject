@@ -7,9 +7,9 @@ from tqdm import tqdm
 from dataReformatter import reformat
 from util import init_variable, embed, get_variable, loadTrainingData, preprocessTrainingData, makeMatrix
 
-# Makes heavy use of example.py code, adapted for our dataset and modularized 
+# Makes heavy use of example.py code, adapted for our dataset and modularized
 
-def train(epochs = 50, batches = 30, num_factors = 64):
+def train(epochs = 10, batches = 50, num_factors = 64):
     rawData = loadTrainingData()
     preprocessed = preprocessTrainingData(rawData)
     df, users, items, numEvents, rows, cols, data_sparse, uids, iids = makeMatrix(preprocessed)
@@ -24,7 +24,7 @@ def train(epochs = 50, batches = 30, num_factors = 64):
     lr = 0.005
 
     # How many (u,i,j) triplets we sample for each batch
-    samples = 15000
+    samples = 500
 
     #-------------------------
     # TENSORFLOW GRAPH
